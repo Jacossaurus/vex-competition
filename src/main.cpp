@@ -9,23 +9,35 @@
 
 #include "robot/config.h"
 #include "robot/core.h"
-#include "robot/images.h"
+#include "robot/buttons.h"
 #include "driver.h"
 #include "auto.h"
 
 int main()
 {
-	print("\n\n\n------\n");
+	log("------");
 
-	print("New thread started");
-	print("Waiting for vex..");
+	log("New thread started");
+	log("Waiting for vex...");
 
-	Competition.autonomous(autonomous);
-	Competition.drivercontrol(driverControl);
+	if (!isTestingAutonomous)
+	{
+		Competition.autonomous(autonomous);
+		Competition.drivercontrol(driverControl);
+	}
+	else
+	{
+		log("Testing autonomous!");
+		log("Disable isTestingAutonomous in config.h if incorrect.");
 
-	print("Registered events");
+		autonomous();
+	}
 
-	print("\n------\n");
+	vex::thread(reset).setPriority(10);
+
+	log("Registered events");
+
+	log("------");
 
 	return 0;
 }
