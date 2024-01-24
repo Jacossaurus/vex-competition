@@ -1,13 +1,15 @@
 #pragma once
 
-#include <vex_thread.h>
+#include <iostream>
 #include <string>
+#include <vector>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "v5.h"
-#include "v5_vcs.h"
+#include <vex_thread.h>
+#include <v5.h>
+#include <v5_vcs.h>
 
 using namespace vex;
 
@@ -49,6 +51,8 @@ void log(const char *message)
 {
 	Brain.Screen.print(message);
 	Brain.Screen.newLine();
+
+	std::cout << message << std::endl;
 }
 
 void clearLine()

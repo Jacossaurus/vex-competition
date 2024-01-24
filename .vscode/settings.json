@@ -5,6 +5,7 @@
 	"files.associations": {
 		"cmath": "cpp",
 		"vector": "cpp",
-		"thread": "cpp"
+		"thread": "cpp",
+		"ostream": "cpp"
 	}
 }

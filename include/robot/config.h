@@ -1,14 +1,11 @@
 #pragma once
 
-// DANGEROUS.... please be careful.
-bool RESET_ARMS_DANGEROUSLY = false;
-
 // Change to reverse direction of all motors.
 bool IS_REVERSED = false;
 bool SPINNY_MOTOR_REVERSED = true;
 
-// Switch this when saving to different slots (for left and right autonomous).
-bool IS_OPPOSITE_AUTONOMOUS = false;
+// If true, then skills autonomous will play. Else, competition autonomous will play.
+bool IS_SKILLS_AUTONOMOUS = false;
 
 // WARNING: highly recommended off, as drivetrain introduces noticeable input-lag.
 bool IS_USING_DRIVETRAIN = false;
@@ -29,3 +26,4 @@ int ARMS_VELOCITY = 25;
 bool isSpinnyMotorRunning = false;
 bool areArmsOpen = false;
 bool isTestingAutonomous = false;
+bool isRecording = false;

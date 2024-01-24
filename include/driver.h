@@ -6,7 +6,7 @@ void toggleSpinnyThing()
 	{
 		isSpinnyMotorRunning = true;
 
-		SpinnyMotor.setVelocity(100, percent);
+		SpinnyMotor.setVelocity(600, rpm);
 		SpinnyMotor.spin(forward);
 
 		clearLine();
@@ -18,7 +18,7 @@ void toggleSpinnyThing()
 		isSpinnyMotorRunning = false;
 
 		SpinnyMotor.stop();
-		SpinnyMotor.setVelocity(0, percent);
+		SpinnyMotor.setVelocity(0, rpm);
 
 		clearLine();
 
@@ -98,6 +98,11 @@ void driverControl()
 	INCREASE_VELOCITY_BUTTON.pressed(increaseVelocity);
 	DECREASE_VELOCITY_BUTTON.pressed(decreaseVelocity);
 
+	BEGIN_RECORDING_BUTTON.pressed(beginRecording);
+	STOP_RECORDING_BUTTON.pressed(stopRecording);
+
+	PLAY_RECORDING_BUTTON.pressed(playRecording);
+
 	if (!IS_USING_DRIVETRAIN)
 	{
 		while (true)
@@ -129,6 +134,11 @@ void driverControl()
 
 			RightFrontMotor.spin(forward);
 			RightBackMotor.spin(forward);
+
+			if (isRecording)
+			{
+				record(leftVelocity, rightVelocity);
+			}
 
 			// Arms
 			int armVelocity = 0;

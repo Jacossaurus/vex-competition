@@ -18,3 +18,7 @@ vex::controller::button DECREASE_VELOCITY_BUTTON = Controller.ButtonDown;
 
 vex::controller::button INCREASE_ENDGAME_BUTTON = Controller.ButtonR1;
 vex::controller::button DECREASE_ENDGAME_BUTTON = Controller.ButtonR2;
+
+vex::controller::button BEGIN_RECORDING_BUTTON = Controller.ButtonLeft;
+vex::controller::button STOP_RECORDING_BUTTON = Controller.ButtonRight;
+vex::controller::button PLAY_RECORDING_BUTTON = Controller.ButtonB;

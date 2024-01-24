@@ -7,11 +7,12 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-#include "robot/config.h"
-#include "robot/core.h"
-#include "robot/buttons.h"
-#include "driver.h"
-#include "auto.h"
+#include "../include/robot/config.h"
+#include "../include/robot/core.h"
+#include "../include/robot/buttons.h"
+#include "../include/record.h"
+#include "../include/driver.h"
+#include "../include/auto.h"
 
 int main()
 {
