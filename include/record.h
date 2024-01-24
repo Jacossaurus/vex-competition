@@ -25,7 +25,7 @@ void stopRecording()
 
 	for (int velocity : driverVelocities)
 	{
-		// log stuff
+		std::cout << velocity << std::endl;
 	}
 
 	clearLine();
