@@ -7,9 +7,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <vex_thread.h>
-#include <v5.h>
-#include <v5_vcs.h>
+#include "vex_thread.h"
+#include "v5.h"
+#include "v5_vcs.h"
 
 using namespace vex;
 
@@ -35,8 +35,6 @@ motor_group RightMotors = motor_group(RightFrontMotor, RightBackMotor);
 
 motor_group EndGameMotors = motor_group(EndGameMotor1, EndGameMotor2);
 
-drivetrain Drivetrain = drivetrain(LeftMotors, RightMotors, 2 * M_PI * WHEEL_RADIUS, OPPOSITE_WHEEL_DISTANCE, WHEEL_BASE, mm);
-
 // Reset all motors to default positions
 void reset()
 {
@@ -58,4 +56,11 @@ void log(const char *message)
 void clearLine()
 {
 	Controller.Screen.clearLine(3);
+}
+
+void show(const char *message)
+{
+	clearLine();
+
+	Controller.Screen.print(message);
 }

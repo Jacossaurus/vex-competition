@@ -19,29 +19,29 @@ void autonomous()
 
 	log("Autonomous activated");
 
-	if (!IS_SKILLS_AUTONOMOUS)
-	{
-		Drivetrain.setDriveVelocity(15, percent);
+	// if (!IS_SKILLS_AUTONOMOUS)
+	// {
+	// 	Drivetrain.setDriveVelocity(15, percent);
 
-		openArms();
+	// 	openArms();
 
-		Drivetrain.driveFor(18, inches, true);
+	// 	Drivetrain.driveFor(18, inches, true);
 
-		wait(100, msec);
+	// 	wait(100, msec);
 
-		Drivetrain.driveFor(-18, inches, true);
+	// 	Drivetrain.driveFor(-18, inches, true);
 
-		closeArms();
-	}
-	else
-	{
-		Drivetrain.setStopping(hold);
-		Drivetrain.setDriveVelocity(0, percent);
-		Drivetrain.setTurnVelocity(0, percent);
+	// 	closeArms();
+	// }
+	// else
+	// {
+	// 	Drivetrain.setStopping(hold);
+	// 	Drivetrain.setDriveVelocity(0, percent);
+	// 	Drivetrain.setTurnVelocity(0, percent);
 
-		Drivetrain.stop();
+	// 	Drivetrain.stop();
 
-		SpinnyMotor.setVelocity(600, rpm);
-		SpinnyMotor.spinFor(55, seconds);
-	}
+	// 	SpinnyMotor.setVelocity(600, rpm);
+	// 	SpinnyMotor.spinFor(55, seconds);
+	// }
 }

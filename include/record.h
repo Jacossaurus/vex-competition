@@ -1,64 +1,72 @@
 #pragma once
 
-std::vector<int> driverVelocities;
+std::vector<int> recording[4] = {};
 
-std::vector<int> driverRecording = {};
-
-void record(int leftVelocity, int rightVelocity)
+void record(int leftVelocity, int rightVelocity, int armsVelocity, int endGameVelocity)
 {
-	driverVelocities.push_back(leftVelocity);
-	driverVelocities.push_back(rightVelocity);
+	recording->insert(recording->end(), {leftVelocity, rightVelocity, armsVelocity, endGameVelocity});
 }
 
 void beginRecording()
 {
 	isRecording = true;
 
-	clearLine();
-
-	Controller.Screen.print("Recording started");
+	show("Recording started");
 }
 
 void stopRecording()
 {
 	isRecording = false;
 
-	for (int velocity : driverVelocities)
-	{
-		std::cout << velocity << std::endl;
-	}
+	show("Recording ended");
 
-	clearLine();
+	log("DO NOT STOP PROGRAM.");
+	log("Saving recording...");
 
-	Controller.Screen.print("Recording ended and logged");
+	Brain.SDcard.savefile("auton.dat", (uint8_t *)recording, sizeof(recording));
+
+	log("Saved. All is well.");
 }
 
 void playRecording()
 {
-	bool isLeft = true;
+	isPlayingRecording = true;
 
-	LeftFrontMotor.spin(forward);
-	LeftBackMotor.spin(forward);
+	show("Loading recording");
 
-	RightFrontMotor.spin(forward);
-	RightBackMotor.spin(forward);
+	Brain.SDcard.loadfile("auton.dat", (uint8_t *)recording, sizeof(recording));
 
-	for (int velocity : driverRecording)
+	show("Playing recording");
+
+	// Stages - (1) left, (2) right, (3) arms, (4) end game
+	int stage = 1;
+
+	for (std::vector<int> velocities : recording)
 	{
-		if (isLeft)
-		{
-			LeftFrontMotor.setVelocity(velocity, percent);
-			LeftBackMotor.setVelocity(velocity, percent);
-		}
-		else
-		{
+		LeftFrontMotor.setVelocity(velocities[0], percent);
+		LeftBackMotor.setVelocity(velocities[0], percent);
 
-			RightFrontMotor.setVelocity(velocity, percent);
-			RightBackMotor.setVelocity(velocity, percent);
-		}
+		RightFrontMotor.setVelocity(velocities[1], percent);
+		RightBackMotor.setVelocity(velocities[1], percent);
 
-		isLeft = !isLeft;
+		ArmMotors.setVelocity(velocities[2], percent);
+
+		EndGameMotors.setVelocity(velocities[3], percent);
+
+		LeftFrontMotor.spin(forward);
+		LeftBackMotor.spin(forward);
+
+		RightFrontMotor.spin(forward);
+		RightBackMotor.spin(forward);
+
+		ArmMotors.spin(forward);
+
+		EndGameMotors.spin(forward);
 
 		wait(1, msec);
 	}
+
+	show("Recording finished");
+
+	isPlayingRecording = false;
 }

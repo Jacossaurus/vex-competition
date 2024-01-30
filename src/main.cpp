@@ -7,12 +7,12 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-#include "../include/robot/config.h"
-#include "../include/robot/core.h"
-#include "../include/robot/buttons.h"
-#include "../include/record.h"
-#include "../include/driver.h"
-#include "../include/auto.h"
+#include "robot/config.h"
+#include "robot/core.h"
+#include "robot/buttons.h"
+#include "record.h"
+#include "driver.h"
+#include "auto.h"
 
 int main()
 {
@@ -21,18 +21,8 @@ int main()
 	log("New thread started");
 	log("Waiting for vex...");
 
-	if (!isTestingAutonomous)
-	{
-		Competition.autonomous(autonomous);
-		Competition.drivercontrol(driverControl);
-	}
-	else
-	{
-		log("Testing autonomous!");
-		log("Disable isTestingAutonomous in config.h if incorrect.");
-
-		autonomous();
-	}
+	Competition.autonomous(autonomous);
+	Competition.drivercontrol(driverControl);
 
 	vex::thread(reset).setPriority(10);
 

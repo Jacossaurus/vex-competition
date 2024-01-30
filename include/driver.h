@@ -9,9 +9,7 @@ void toggleSpinnyThing()
 		SpinnyMotor.setVelocity(600, rpm);
 		SpinnyMotor.spin(forward);
 
-		clearLine();
-
-		Controller.Screen.print("Spinny motor enabled");
+		show("Spinny motor enabled");
 	}
 	else
 	{
@@ -20,9 +18,7 @@ void toggleSpinnyThing()
 		SpinnyMotor.stop();
 		SpinnyMotor.setVelocity(0, rpm);
 
-		clearLine();
-
-		Controller.Screen.print("Spinny motor disabled");
+		show("Spinny motor disabled");
 	}
 }
 
@@ -39,9 +35,7 @@ void toggleSpinnyReverse()
 		SpinnyMotor.spin(forward);
 	}
 
-	clearLine();
-
-	Controller.Screen.print("Spinny motor reversed");
+	show("Spinny motor reversed");
 }
 
 void toggleDriverReverse()
@@ -54,9 +48,7 @@ void toggleDriverReverse()
 	RightFrontMotor.setReversed(!IS_REVERSED);
 	RightBackMotor.setReversed(!IS_REVERSED);
 
-	clearLine();
-
-	Controller.Screen.print("Driver motors reversed");
+	show("Driver motors reversed");
 }
 
 void increaseVelocity()
@@ -103,86 +95,74 @@ void driverControl()
 
 	PLAY_RECORDING_BUTTON.pressed(playRecording);
 
-	if (!IS_USING_DRIVETRAIN)
+	while (true)
 	{
-		while (true)
+		wait(1, msec);
+
+		if (isPlayingRecording)
+			continue;
+
+		int rotVelocity = fmax(fmin(LEFT_AND_RIGHT_AXIS.position(), MAX_VELOCITY), -MAX_VELOCITY);
+
+		int leftVelocity = 0;
+		int rightVelocity = 0;
+
+		// Foward and Reverse
+		leftVelocity = fmax(fmin(FORWARD_AND_BACK_AXIS.position(), MAX_VELOCITY), -MAX_VELOCITY);
+		rightVelocity = fmax(fmin(FORWARD_AND_BACK_AXIS.position(), MAX_VELOCITY), -MAX_VELOCITY);
+
+		// Left and Right
+		leftVelocity += (-rotVelocity * (IS_REVERSED ? 1 : -1)) / 2;
+		rightVelocity += (rotVelocity * (IS_REVERSED ? 1 : -1)) / 2;
+
+		// Set velocites
+		LeftFrontMotor.setVelocity(leftVelocity, percent);
+		LeftBackMotor.setVelocity(leftVelocity, percent);
+
+		LeftFrontMotor.spin(forward);
+		LeftBackMotor.spin(forward);
+
+		RightFrontMotor.setVelocity(rightVelocity, percent);
+		RightBackMotor.setVelocity(rightVelocity, percent);
+
+		RightFrontMotor.spin(forward);
+		RightBackMotor.spin(forward);
+
+		// Arms
+		int armVelocity = 0;
+
+		if (OPEN_ARMS_BUTTON.pressing())
 		{
-			wait(1, msec);
-
-			int rotVelocity = fmax(fmin(LEFT_AND_RIGHT_AXIS.position(), MAX_VELOCITY), -MAX_VELOCITY);
-
-			int leftVelocity = 0;
-			int rightVelocity = 0;
-
-			// Foward and Reverse
-			leftVelocity = fmax(fmin(FORWARD_AND_BACK_AXIS.position(), MAX_VELOCITY), -MAX_VELOCITY);
-			rightVelocity = fmax(fmin(FORWARD_AND_BACK_AXIS.position(), MAX_VELOCITY), -MAX_VELOCITY);
-
-			// Left and Right
-			leftVelocity += (-rotVelocity * (IS_REVERSED ? 1 : -1)) / 2;
-			rightVelocity += (rotVelocity * (IS_REVERSED ? 1 : -1)) / 2;
-
-			// Set velocites
-			LeftFrontMotor.setVelocity(leftVelocity, percent);
-			LeftBackMotor.setVelocity(leftVelocity, percent);
-
-			LeftFrontMotor.spin(forward);
-			LeftBackMotor.spin(forward);
-
-			RightFrontMotor.setVelocity(rightVelocity, percent);
-			RightBackMotor.setVelocity(rightVelocity, percent);
-
-			RightFrontMotor.spin(forward);
-			RightBackMotor.spin(forward);
-
-			if (isRecording)
-			{
-				record(leftVelocity, rightVelocity);
-			}
-
-			// Arms
-			int armVelocity = 0;
-
-			if (OPEN_ARMS_BUTTON.pressing())
-			{
-				armVelocity += ARMS_VELOCITY;
-			}
-
-			if (CLOSE_ARMS_BUTTON.pressing())
-			{
-				armVelocity -= ARMS_VELOCITY;
-			}
-
-			ArmMotors.setVelocity(armVelocity, percent);
-			ArmMotors.spin(forward);
-
-			// Endgame
-			int endGameVelocity = 0;
-
-			if (INCREASE_ENDGAME_BUTTON.pressing())
-			{
-				endGameVelocity += END_GAME_VELOCITY;
-			}
-
-			if (DECREASE_ENDGAME_BUTTON.pressing())
-			{
-				endGameVelocity -= END_GAME_VELOCITY;
-			}
-
-			EndGameMotors.setVelocity(endGameVelocity, percent);
-			EndGameMotors.spin(forward);
+			armVelocity += ARMS_VELOCITY;
 		}
-	}
-	else
-	{
-		while (true)
+
+		if (CLOSE_ARMS_BUTTON.pressing())
 		{
-			wait(1, msec);
+			armVelocity -= ARMS_VELOCITY;
+		}
 
-			int8_t axisVelocity = fmax(fmin(Controller.Axis3.position(), MAX_VELOCITY), -MAX_VELOCITY);
-			int8_t rotVelocity = fmax(fmin(Controller.Axis1.position(), MAX_VELOCITY), -MAX_VELOCITY);
+		ArmMotors.setVelocity(armVelocity, percent);
+		ArmMotors.spin(forward);
 
-			Drivetrain.arcade(axisVelocity, -rotVelocity, percent);
+		// Endgame
+		int endGameVelocity = 0;
+
+		if (INCREASE_ENDGAME_BUTTON.pressing())
+		{
+			endGameVelocity += END_GAME_VELOCITY;
+		}
+
+		if (DECREASE_ENDGAME_BUTTON.pressing())
+		{
+			endGameVelocity -= END_GAME_VELOCITY;
+		}
+
+		EndGameMotors.setVelocity(endGameVelocity, percent);
+		EndGameMotors.spin(forward);
+
+		if (isRecording)
+		{
+			record(leftVelocity, rightVelocity, armVelocity, endGameVelocity);
 		}
 	}
 }
