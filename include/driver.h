@@ -9,7 +9,7 @@ void toggleSpinnyThing()
 		SpinnyMotor.setVelocity(600, rpm);
 		SpinnyMotor.spin(forward);
 
-		show("Spinny motor enabled");
+		log("Spinny motor enabled");
 	}
 	else
 	{
@@ -18,13 +18,14 @@ void toggleSpinnyThing()
 		SpinnyMotor.stop();
 		SpinnyMotor.setVelocity(0, rpm);
 
-		show("Spinny motor disabled");
+		log("Spinny motor disabled");
 	}
 }
 
 void toggleSpinnyReverse()
 {
-	SpinnyMotor.stop();
+	if (isSpinnyMotorRunning)
+		return;
 
 	SPINNY_MOTOR_REVERSED = !SPINNY_MOTOR_REVERSED;
 
@@ -35,7 +36,7 @@ void toggleSpinnyReverse()
 		SpinnyMotor.spin(forward);
 	}
 
-	show("Spinny motor reversed");
+	log("Spinny motor reversed");
 }
 
 void toggleDriverReverse()
@@ -48,7 +49,7 @@ void toggleDriverReverse()
 	RightFrontMotor.setReversed(!IS_REVERSED);
 	RightBackMotor.setReversed(!IS_REVERSED);
 
-	show("Driver motors reversed");
+	log("Driver motors reversed");
 }
 
 void increaseVelocity()
@@ -97,7 +98,7 @@ void driverControl()
 
 	while (true)
 	{
-		wait(1, msec);
+		wait(VELOCITY_UPDATE_RATE, msec);
 
 		if (isPlayingRecording)
 			continue;
@@ -114,6 +115,9 @@ void driverControl()
 		// Left and Right
 		leftVelocity += (-rotVelocity * (IS_REVERSED ? 1 : -1)) / 2;
 		rightVelocity += (rotVelocity * (IS_REVERSED ? 1 : -1)) / 2;
+
+		leftVelocity = fmax(fmin(leftVelocity, 100), -100);
+		rightVelocity = fmax(fmin(rightVelocity, 100), -100);
 
 		// Set velocites
 		LeftFrontMotor.setVelocity(leftVelocity, percent);

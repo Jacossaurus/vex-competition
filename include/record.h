@@ -1,72 +1,91 @@
 #pragma once
 
-std::vector<int> recording[4] = {};
+int8_t recording[4][MAX_SAMPLES] = {};
+
+int index = 0;
 
 void record(int leftVelocity, int rightVelocity, int armsVelocity, int endGameVelocity)
 {
-	recording->insert(recording->end(), {leftVelocity, rightVelocity, armsVelocity, endGameVelocity});
+	if (!isRecording || isPlayingRecording)
+		return;
+
+	recording[0][index] = leftVelocity;
+	recording[1][index] = rightVelocity;
+	recording[2][index] = armsVelocity;
+	recording[3][index] = endGameVelocity;
+
+	index++;
 }
 
 void beginRecording()
 {
-	isRecording = true;
+	if (isRecording || isPlayingRecording)
+		return;
 
-	show("Recording started");
+	log("Recording began");
+
+	index = 0;
+
+	isRecording = true;
 }
 
 void stopRecording()
 {
-	isRecording = false;
+	if (!isRecording)
+		return;
 
-	show("Recording ended");
+	log("Recording stopped");
 
-	log("DO NOT STOP PROGRAM.");
-	log("Saving recording...");
+	if (index < MAX_SAMPLES)
+	{
+		recording[0][index] = -1;
+	}
 
 	Brain.SDcard.savefile("auton.dat", (uint8_t *)recording, sizeof(recording));
 
-	log("Saved. All is well.");
+	index = 0;
+
+	isRecording = false;
 }
 
 void playRecording()
 {
+	if (isPlayingRecording || isRecording)
+		return;
+
+	log("Playing recording");
+
 	isPlayingRecording = true;
 
-	show("Loading recording");
+	int read = Brain.SDcard.loadfile("auton.dat", (uint8_t *)recording, sizeof(recording));
 
-	Brain.SDcard.loadfile("auton.dat", (uint8_t *)recording, sizeof(recording));
-
-	show("Playing recording");
-
-	// Stages - (1) left, (2) right, (3) arms, (4) end game
-	int stage = 1;
-
-	for (std::vector<int> velocities : recording)
+	for (int i = 0; i <= MAX_SAMPLES; i++)
 	{
-		LeftFrontMotor.setVelocity(velocities[0], percent);
-		LeftBackMotor.setVelocity(velocities[0], percent);
+		int leftVelocity = recording[0][i];
+		int rightVelocity = recording[1][i];
+		int armsVelocity = recording[2][i];
+		int endGameVelocity = recording[3][i];
 
-		RightFrontMotor.setVelocity(velocities[1], percent);
-		RightBackMotor.setVelocity(velocities[1], percent);
+		if (leftVelocity == -1)
+		{
+			break;
+		}
 
-		ArmMotors.setVelocity(velocities[2], percent);
+		LeftMotors.spin(forward, leftVelocity, percent);
+		RightMotors.spin(forward, rightVelocity, percent);
 
-		EndGameMotors.setVelocity(velocities[3], percent);
-
-		LeftFrontMotor.spin(forward);
-		LeftBackMotor.spin(forward);
-
-		RightFrontMotor.spin(forward);
-		RightBackMotor.spin(forward);
-
-		ArmMotors.spin(forward);
-
-		EndGameMotors.spin(forward);
+		ArmMotors.spin(forward, armsVelocity, percent);
+		EndGameMotors.spin(forward, endGameVelocity, percent);
 
 		wait(1, msec);
 	}
 
-	show("Recording finished");
+	LeftMotors.stop();
+	RightMotors.stop();
+	ArmMotors.stop();
+	EndGameMotors.stop();
 
 	isPlayingRecording = false;
+
+	log("Recording stopped");
 }

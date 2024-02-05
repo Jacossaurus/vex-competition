@@ -16,19 +16,12 @@
 
 int main()
 {
-	log("------");
-
-	log("New thread started");
-	log("Waiting for vex...");
+	log("One sec...");
 
 	Competition.autonomous(autonomous);
 	Competition.drivercontrol(driverControl);
 
 	vex::thread(reset).setPriority(10);
-
-	log("Registered events");
-
-	log("------");
 
 	return 0;
 }
