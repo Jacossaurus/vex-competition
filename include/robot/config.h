@@ -8,7 +8,7 @@ bool SPINNY_MOTOR_REVERSED = true;
 // -- "GetOnePoint" -- Gets one point, just drives straight and back.
 // -- "Spin" -- Spins the spinny motor for 55 seconds.
 // -- "Recording" -- Plays the saved recording.
-const char *AUTO_MODE = "Recording";
+const char *AUTO_MODE = "GetOnePoint";
 
 // Measured in cm, multiplied by 10 to get mm
 const float WHEEL_RADIUS = 10.5 / 2 * 10;
@@ -16,16 +16,18 @@ const float OPPOSITE_WHEEL_DISTANCE = 25.5 * 10;
 const float WHEEL_BASE = 13.5 * 10;
 
 // Velocity configuration
-int MAX_VELOCITY = 75;
+int MAX_VELOCITY = 50;
 const int VELOCITY_INCREMENT = 5;
 
 const int END_GAME_VELOCITY = 75;
-const int ARMS_VELOCITY = 25;
+const int ARMS_VELOCITY = 40;
 
 const int VELOCITY_UPDATE_RATE = 1;
 
 // Recording
-const int MAX_SAMPLES = (1000 / VELOCITY_UPDATE_RATE) * 15;
+const bool IS_RECORDING_ENABLED = true;
+const int RECORDING_VELOCITY_RATE = 1;
+const int MAX_SAMPLES = (1000 / RECORDING_VELOCITY_RATE) * 15;
 
 // Mutable variables (these are for run-time usage)
 bool isSpinnyMotorRunning = false;

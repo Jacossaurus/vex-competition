@@ -6,8 +6,7 @@ void toggleSpinnyThing()
 	{
 		isSpinnyMotorRunning = true;
 
-		SpinnyMotor.setVelocity(600, rpm);
-		SpinnyMotor.spin(forward);
+		SpinnyMotor.spin(forward, MAX_VELOCITY, percent);
 
 		log("Spinny motor enabled");
 	}
@@ -16,7 +15,7 @@ void toggleSpinnyThing()
 		isSpinnyMotorRunning = false;
 
 		SpinnyMotor.stop();
-		SpinnyMotor.setVelocity(0, rpm);
+		SpinnyMotor.setVelocity(0, percent);
 
 		log("Spinny motor disabled");
 	}
@@ -61,6 +60,11 @@ void increaseVelocity()
 		MAX_VELOCITY = 100;
 	}
 
+	if (isSpinnyMotorRunning)
+	{
+		SpinnyMotor.setVelocity(MAX_VELOCITY, percent);
+	}
+
 	clearLine();
 
 	Controller.Screen.print("Velocity: %d", MAX_VELOCITY);
@@ -73,6 +77,11 @@ void decreaseVelocity()
 	if (MAX_VELOCITY < 0)
 	{
 		MAX_VELOCITY = 0;
+	}
+
+	if (isSpinnyMotorRunning)
+	{
+		SpinnyMotor.setVelocity(MAX_VELOCITY, percent);
 	}
 
 	clearLine();
@@ -98,7 +107,14 @@ void driverControl()
 
 	while (true)
 	{
-		wait(VELOCITY_UPDATE_RATE, msec);
+		if (!isRecording)
+		{
+			wait(VELOCITY_UPDATE_RATE, msec);
+		}
+		else
+		{
+			wait(RECORDING_VELOCITY_RATE, msec);
+		}
 
 		if (isPlayingRecording)
 			continue;
@@ -120,17 +136,8 @@ void driverControl()
 		rightVelocity = fmax(fmin(rightVelocity, 100), -100);
 
 		// Set velocites
-		LeftFrontMotor.setVelocity(leftVelocity, percent);
-		LeftBackMotor.setVelocity(leftVelocity, percent);
-
-		LeftFrontMotor.spin(forward);
-		LeftBackMotor.spin(forward);
-
-		RightFrontMotor.setVelocity(rightVelocity, percent);
-		RightBackMotor.setVelocity(rightVelocity, percent);
-
-		RightFrontMotor.spin(forward);
-		RightBackMotor.spin(forward);
+		LeftMotors.spin(forward, leftVelocity, percent);
+		RightMotors.spin(forward, rightVelocity, percent);
 
 		// Arms
 		int armVelocity = 0;
@@ -145,8 +152,7 @@ void driverControl()
 			armVelocity -= ARMS_VELOCITY;
 		}
 
-		ArmMotors.setVelocity(armVelocity, percent);
-		ArmMotors.spin(forward);
+		ArmMotors.spin(forward, armVelocity, percent);
 
 		// Endgame
 		int endGameVelocity = 0;
@@ -161,8 +167,7 @@ void driverControl()
 			endGameVelocity -= END_GAME_VELOCITY;
 		}
 
-		EndGameMotors.setVelocity(endGameVelocity, percent);
-		EndGameMotors.spin(forward);
+		EndGameMotors.spin(forward, endGameVelocity, percent);
 
 		if (isRecording)
 		{

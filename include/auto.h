@@ -2,34 +2,44 @@
 
 void openArms()
 {
-	ArmMotors.setVelocity(ARMS_VELOCITY, percent);
-	ArmMotors.spinFor(1, sec);
+	ArmMotors.setVelocity(-ARMS_VELOCITY, percent);
+	ArmMotors.spinFor(1.5, sec);
 }
 
 void closeArms()
 {
-	ArmMotors.setVelocity(-ARMS_VELOCITY, percent);
+	ArmMotors.setVelocity(ARMS_VELOCITY, percent);
 
 	ArmMotors.spinFor(1, sec);
 }
 
 void autonomous()
 {
-	wait(VELOCITY_UPDATE_RATE, msec);
+	wait(100, msec);
 
 	log("Autonomous activated");
 
 	if (AUTO_MODE == "GetOnePoint")
 	{
-		Drivetrain.setDriveVelocity(15, percent);
+		Drivetrain.setDriveVelocity(40, percent);
 
 		openArms();
 
-		Drivetrain.driveFor(18, inches, true);
+		// Drivetrain.driveFor(27, inches, true);
 
-		wait(100, msec);
+		// wait(100, msec);
 
-		Drivetrain.driveFor(-18, inches, true);
+		// Drivetrain.driveFor(-25, inches, true);
+
+		Drivetrain.drive(forward);
+
+		wait(1.5, sec);
+
+		Drivetrain.drive(reverse);
+
+		wait(1, sec);
+
+		Drivetrain.stop();
 
 		closeArms();
 	}
@@ -41,8 +51,8 @@ void autonomous()
 
 		Drivetrain.stop();
 
-		SpinnyMotor.setVelocity(600, rpm);
-		SpinnyMotor.spinFor(55, seconds);
+		SpinnyMotor.setVelocity(70, percent);
+		SpinnyMotor.spinFor(60, seconds);
 	}
 	else if (AUTO_MODE == "Recording")
 	{
