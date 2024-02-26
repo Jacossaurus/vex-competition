@@ -4,7 +4,7 @@ int8_t recording[4][MAX_SAMPLES] = {};
 
 int index = 0;
 
-void record(int leftVelocity, int rightVelocity, int armsVelocity, int endGameVelocity)
+void record(int leftVelocity, int rightVelocity, int armsVelocity)
 {
 	if (!IS_RECORDING_ENABLED || !isRecording || isPlayingRecording)
 		return;
@@ -12,13 +12,12 @@ void record(int leftVelocity, int rightVelocity, int armsVelocity, int endGameVe
 	recording[0][index] = leftVelocity;
 	recording[1][index] = rightVelocity;
 	recording[2][index] = armsVelocity;
-	recording[3][index] = endGameVelocity;
 
 	if (index % 1000 == 0)
 	{
 		clearLine();
 
-		Controller.Screen.print("Recording (%d / %d)", index / 1000, MAX_SAMPLES / 1000);
+		log("Recording (%d / %d)", index / 1000, MAX_SAMPLES / 1000);
 	}
 
 	index++;
@@ -71,7 +70,6 @@ void playRecording()
 		int leftVelocity = recording[0][i];
 		int rightVelocity = recording[1][i];
 		int armsVelocity = recording[2][i];
-		int endGameVelocity = recording[3][i];
 
 		if (leftVelocity == -101)
 		{
@@ -81,16 +79,14 @@ void playRecording()
 		LeftMotors.spin(forward, leftVelocity, percent);
 		RightMotors.spin(forward, rightVelocity, percent);
 
-		ArmMotors.spin(forward, armsVelocity, percent);
-		EndGameMotors.spin(forward, endGameVelocity, percent);
+		// ArmMotors.spin(forward, armsVelocity, percent);
 
 		wait(1, msec);
 	}
 
 	LeftMotors.stop();
 	RightMotors.stop();
-	ArmMotors.stop();
-	EndGameMotors.stop();
+	// ArmMotors.stop();
 
 	isPlayingRecording = false;
 

@@ -1,41 +1,21 @@
 #pragma once
 
-void toggleSpinnyThing()
+void launch()
 {
-	if (!isSpinnyMotorRunning)
-	{
-		isSpinnyMotorRunning = true;
-
-		SpinnyMotor.spin(forward, MAX_VELOCITY, percent);
-
-		log("Spinny motor enabled");
-	}
-	else
-	{
-		isSpinnyMotorRunning = false;
-
-		SpinnyMotor.stop();
-		SpinnyMotor.setVelocity(0, percent);
-
-		log("Spinny motor disabled");
-	}
-}
-
-void toggleSpinnyReverse()
-{
-	if (isSpinnyMotorRunning)
+	if (isLaunching)
 		return;
 
-	SPINNY_MOTOR_REVERSED = !SPINNY_MOTOR_REVERSED;
+	isLaunching = true;
 
-	SpinnyMotor.setReversed(SPINNY_MOTOR_REVERSED);
+	LaunchMotor.spin(forward, MAX_VELOCITY, percent);
 
-	if (isSpinnyMotorRunning)
-	{
-		SpinnyMotor.spin(forward);
-	}
+	wait(50000, msec);
 
-	log("Spinny motor reversed");
+	LaunchMotor.stop();
+
+	log("Launching");
+
+	isLaunching = false;
 }
 
 void toggleDriverReverse()
@@ -60,14 +40,7 @@ void increaseVelocity()
 		MAX_VELOCITY = 100;
 	}
 
-	if (isSpinnyMotorRunning)
-	{
-		SpinnyMotor.setVelocity(MAX_VELOCITY, percent);
-	}
-
-	clearLine();
-
-	Controller.Screen.print("Velocity: %d", MAX_VELOCITY);
+	log("Velocity: %d", MAX_VELOCITY);
 }
 
 void decreaseVelocity()
@@ -79,23 +52,17 @@ void decreaseVelocity()
 		MAX_VELOCITY = 0;
 	}
 
-	if (isSpinnyMotorRunning)
-	{
-		SpinnyMotor.setVelocity(MAX_VELOCITY, percent);
-	}
-
 	clearLine();
 
-	Controller.Screen.print("Velocity: %d", MAX_VELOCITY);
+	log("Velocity: %d", MAX_VELOCITY);
 }
 
 void driverControl()
 {
 	log("Driver control activated");
 
-	TOGGLE_SPINNY_THING_BUTTON.pressed(toggleSpinnyThing);
+	TOGGLE_LAUNCHER_BUTTON.pressed(launch);
 	TOGGLE_DRIVER_REVERSE_BUTTON.pressed(toggleDriverReverse);
-	TOGGLE_SPINNY_REVERSE_BUTTON.pressed(toggleSpinnyReverse);
 
 	INCREASE_VELOCITY_BUTTON.pressed(increaseVelocity);
 	DECREASE_VELOCITY_BUTTON.pressed(decreaseVelocity);
@@ -140,38 +107,18 @@ void driverControl()
 		RightMotors.spin(forward, rightVelocity, percent);
 
 		// Arms
-		int armVelocity = 0;
-
 		if (OPEN_ARMS_BUTTON.pressing())
 		{
-			armVelocity += ARMS_VELOCITY;
+			Pneumatics.set(true);
 		}
-
-		if (CLOSE_ARMS_BUTTON.pressing())
+		else if (CLOSE_ARMS_BUTTON.pressing())
 		{
-			armVelocity -= ARMS_VELOCITY;
+			Pneumatics.set(false);
 		}
-
-		ArmMotors.spin(forward, armVelocity, percent);
-
-		// Endgame
-		int endGameVelocity = 0;
-
-		if (INCREASE_ENDGAME_BUTTON.pressing())
-		{
-			endGameVelocity += END_GAME_VELOCITY;
-		}
-
-		if (DECREASE_ENDGAME_BUTTON.pressing())
-		{
-			endGameVelocity -= END_GAME_VELOCITY;
-		}
-
-		EndGameMotors.spin(forward, endGameVelocity, percent);
 
 		if (isRecording)
 		{
-			record(leftVelocity, rightVelocity, armVelocity, endGameVelocity);
+			// record(leftVelocity, rightVelocity);
 		}
 	}
 }

@@ -2,7 +2,6 @@
 
 // Change to reverse direction of all motors.
 bool IS_REVERSED = false;
-bool SPINNY_MOTOR_REVERSED = true;
 
 // Recording
 // -- "GetOnePoint" -- Gets one point, just drives straight and back.
@@ -16,10 +15,9 @@ const float OPPOSITE_WHEEL_DISTANCE = 25.5 * 10;
 const float WHEEL_BASE = 13.5 * 10;
 
 // Velocity configuration
-int MAX_VELOCITY = 50;
-const int VELOCITY_INCREMENT = 5;
+int MAX_VELOCITY = 25;
 
-const int END_GAME_VELOCITY = 75;
+const int VELOCITY_INCREMENT = 5;
 const int ARMS_VELOCITY = 40;
 
 const int VELOCITY_UPDATE_RATE = 1;
@@ -30,7 +28,7 @@ const int RECORDING_VELOCITY_RATE = 1;
 const int MAX_SAMPLES = (1000 / RECORDING_VELOCITY_RATE) * 15;
 
 // Mutable variables (these are for run-time usage)
-bool isSpinnyMotorRunning = false;
+bool isLaunching = false;
 bool areArmsOpen = false;
 bool isRecording = false;
 bool isPlayingRecording = false;

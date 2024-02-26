@@ -2,15 +2,12 @@
 
 void openArms()
 {
-	ArmMotors.setVelocity(-ARMS_VELOCITY, percent);
-	ArmMotors.spinFor(1.5, sec);
+	Pneumatics.set(true);
 }
 
 void closeArms()
 {
-	ArmMotors.setVelocity(ARMS_VELOCITY, percent);
-
-	ArmMotors.spinFor(1, sec);
+	Pneumatics.set(false);
 }
 
 void autonomous()
@@ -51,8 +48,8 @@ void autonomous()
 
 		Drivetrain.stop();
 
-		SpinnyMotor.setVelocity(70, percent);
-		SpinnyMotor.spinFor(60, seconds);
+		// SpinnyMotor.setVelocity(70, percent);
+		// SpinnyMotor.spinFor(60, seconds);
 	}
 	else if (AUTO_MODE == "Recording")
 	{

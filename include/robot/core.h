@@ -24,26 +24,22 @@ motor LeftBackMotor(PORT2, ratio18_1, IS_REVERSED);
 motor RightFrontMotor(PORT3, ratio18_1, !IS_REVERSED);
 motor RightBackMotor(PORT4, ratio18_1, !IS_REVERSED);
 
-motor SpinnyMotor(PORT5, ratio18_1, SPINNY_MOTOR_REVERSED);
-motor ArmMotors(PORT6, ratio18_1, false);
+motor LaunchMotor(PORT5, ratio18_1, true);
 
-motor EndGameMotor1(PORT7, ratio18_1, false);
-motor EndGameMotor2(PORT8, ratio18_1, true);
+pneumatics Pneumatics(Brain.ThreeWirePort.A);
 
 motor_group LeftMotors(LeftFrontMotor, LeftBackMotor);
 motor_group RightMotors(RightFrontMotor, RightBackMotor);
 
 drivetrain Drivetrain(LeftMotors, RightMotors, 2 * M_PI * WHEEL_RADIUS, OPPOSITE_WHEEL_DISTANCE, WHEEL_BASE, mm);
 
-motor_group EndGameMotors(EndGameMotor1, EndGameMotor2);
-
 // Reset all motors to default positions
 void reset()
 {
 	wait(VELOCITY_UPDATE_RATE, msec);
 
-	ArmMotors.setStopping(hold);
-	EndGameMotors.setStopping(hold);
+	Pneumatics.set(false);
+	LaunchMotor.setStopping(coast);
 }
 
 // Debug functions
@@ -53,15 +49,13 @@ void clearLine()
 	Brain.Screen.clearScreen();
 }
 
-void log(const char *message)
+void log(const char *format...)
 {
-	Brain.Screen.clearScreen();
-
-	Brain.Screen.printAt(10, 60, message);
-
 	clearLine();
 
-	Controller.Screen.print(message);
+	Brain.Screen.printAt(10, 60, format);
 
-	std::cout << message << std::endl;
+	Controller.Screen.print(format);
+
+	std::cout << format << std::endl;
 }
