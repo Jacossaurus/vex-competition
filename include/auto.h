@@ -2,57 +2,37 @@
 
 void openArms()
 {
-	Pneumatics.set(true);
+	// Pneumatics1.set(true);
+	// Pneumatics2.set(true);
 }
 
 void closeArms()
 {
-	Pneumatics.set(false);
+	// Pneumatics1.set(false);
+	// Pneumatics2.set(false);
 }
 
 void autonomous()
 {
-	wait(100, msec);
+	log("Resetting motors...");
+
+	reset();
 
 	log("Autonomous activated");
 
-	if (AUTO_MODE == "GetOnePoint")
-	{
-		Drivetrain.setDriveVelocity(40, percent);
+	Drivetrain.setDriveVelocity(40, percent);
 
-		openArms();
+	openArms();
 
-		// Drivetrain.driveFor(27, inches, true);
+	Drivetrain.drive(forward);
 
-		// wait(100, msec);
+	wait(2, sec);
 
-		// Drivetrain.driveFor(-25, inches, true);
+	Drivetrain.drive(reverse);
 
-		Drivetrain.drive(forward);
+	wait(1.5, sec);
 
-		wait(1.5, sec);
+	Drivetrain.stop();
 
-		Drivetrain.drive(reverse);
-
-		wait(1, sec);
-
-		Drivetrain.stop();
-
-		closeArms();
-	}
-	else if (AUTO_MODE == "Spin")
-	{
-		Drivetrain.setStopping(hold);
-		Drivetrain.setDriveVelocity(0, percent);
-		Drivetrain.setTurnVelocity(0, percent);
-
-		Drivetrain.stop();
-
-		// SpinnyMotor.setVelocity(70, percent);
-		// SpinnyMotor.spinFor(60, seconds);
-	}
-	else if (AUTO_MODE == "Recording")
-	{
-		playRecording();
-	}
+	closeArms();
 }

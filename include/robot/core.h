@@ -14,32 +14,41 @@
 using namespace vex;
 
 vex::brain Brain;
-vex::timer Timer;
 
 controller Controller(primary);
 competition Competition = competition();
 
-motor LeftFrontMotor(PORT1, ratio18_1, IS_REVERSED);
-motor LeftBackMotor(PORT2, ratio18_1, IS_REVERSED);
-motor RightFrontMotor(PORT3, ratio18_1, !IS_REVERSED);
-motor RightBackMotor(PORT4, ratio18_1, !IS_REVERSED);
+motor LeftFrontMotor(PORT11, ratio18_1, !IS_REVERSED);
+motor LeftBackMotor(PORT20, ratio18_1, !IS_REVERSED);
+motor RightFrontMotor(PORT1, ratio18_1, IS_REVERSED);
+motor RightBackMotor(PORT10, ratio18_1, IS_REVERSED);
 
-motor LaunchMotor(PORT5, ratio18_1, true);
+motor SpinnyMotor(PORT16, ratio18_1, false);
 
-pneumatics Pneumatics(Brain.ThreeWirePort.A);
+motor IntakeMotor(PORT3, ratio18_1, false);
+
+motor EndGameMotor1(PORT15, ratio18_1, false);
+motor EndGameMotor2(PORT9, ratio18_1, true);
+
+pneumatics Pneumatics1(Brain.ThreeWirePort.A);
+pneumatics Pneumatics2(Brain.ThreeWirePort.B);
 
 motor_group LeftMotors(LeftFrontMotor, LeftBackMotor);
 motor_group RightMotors(RightFrontMotor, RightBackMotor);
+motor_group EndGameMotors(EndGameMotor1, EndGameMotor2);
 
 drivetrain Drivetrain(LeftMotors, RightMotors, 2 * M_PI * WHEEL_RADIUS, OPPOSITE_WHEEL_DISTANCE, WHEEL_BASE, mm);
 
 // Reset all motors to default positions
 void reset()
 {
-	wait(VELOCITY_UPDATE_RATE, msec);
+	// Wait for motors to register
+	wait(MOTOR_INIT_DELAY, msec);
 
-	Pneumatics.set(false);
-	LaunchMotor.setStopping(coast);
+	Pneumatics1.set(false);
+	Pneumatics2.set(false);
+
+	EndGameMotors.setStopping(hold);
 }
 
 // Debug functions
@@ -49,7 +58,7 @@ void clearLine()
 	Brain.Screen.clearScreen();
 }
 
-void log(const char *format...)
+void log(char *format...)
 {
 	clearLine();
 
@@ -58,4 +67,6 @@ void log(const char *format...)
 	Controller.Screen.print(format);
 
 	std::cout << format << std::endl;
+
+	fflush(stdout);
 }
