@@ -3,9 +3,9 @@
 /*    Module:       main.cpp                                                  */
 /*    Author:       jacob                                                     */
 /*    Created:      11/10/2023, 8:32:41 AM                                    */
-/*    Description:  I hope this helps. Maybe try making a PID				  */
-/*					system and adding sensors so the autonomous can be more   */
-/*					complex. Good luck!  									  */
+/*    Description:  I hope this helps. Maybe try making a PID                 */
+/*                  system and adding sensors so the autonomous can be more   */
+/*                  complex. Good luck!                                       */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
